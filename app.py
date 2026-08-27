@@ -12,6 +12,7 @@ Para correr local:
 import os
 from io import BytesIO
 from datetime import datetime
+from urllib.parse import quote
 
 import streamlit as st
 import pandas as pd
@@ -54,6 +55,11 @@ BDI_CREMA = "#EFEDEA"
 BDI_CYAN = "#17BEBB"
 BDI_LIMA = "#B5E61D"
 BDI_GRIS_SUAVE = "#5F5E5A"
+
+# --- Contacto WhatsApp ---
+WSP_NUMERO = "5491133583362"   # +54 9 11 3358-3362 (formato wa.me: sin +, sin espacios)
+WSP_MENSAJE = "Hola BDI, vengo de la calculadora de retiro y quiero hacer una consulta."
+WSP_VERDE = "#25D366"
 
 LOGO_PATH_OPTIONS = [
     "assets/logo_bdi.png",
@@ -1849,6 +1855,74 @@ def tab_aprende() -> None:
 # ============================================================
 # MAIN
 # ============================================================
+# ============================================================
+# BOTON FLOTANTE DE WHATSAPP
+# ============================================================
+def render_whatsapp_fab() -> None:
+    """Burbuja fija de WhatsApp, visible en las 4 tabs. Se expande al hover."""
+    url = f"https://wa.me/{WSP_NUMERO}?text={quote(WSP_MENSAJE)}"
+    st.markdown(
+        f"""
+        <style>
+        .bdi-wsp-fab {{
+            position: fixed;
+            right: 22px;
+            bottom: 92px;
+            z-index: 99999;
+            display: flex;
+            align-items: center;
+            height: 56px;
+            padding-right: 0;
+            border-radius: 28px;
+            background: {WSP_VERDE};
+            color: #ffffff !important;
+            text-decoration: none !important;
+            box-shadow: 0 4px 14px rgba(0,0,0,0.28);
+            overflow: hidden;
+            max-width: 56px;
+            transition: max-width .28s ease, padding-right .28s ease, box-shadow .2s ease;
+        }}
+        .bdi-wsp-fab:hover, .bdi-wsp-fab:focus {{
+            max-width: 280px;
+            padding-right: 20px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.35);
+        }}
+        .bdi-wsp-fab .bdi-wsp-icon {{
+            flex: 0 0 56px;
+            width: 56px;
+            height: 56px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }}
+        .bdi-wsp-fab .bdi-wsp-text {{
+            font-family: 'Bebas Neue', Impact, sans-serif;
+            font-size: 17px;
+            letter-spacing: 1.2px;
+            white-space: nowrap;
+            color: #ffffff;
+        }}
+        @media (max-width: 640px) {{
+            .bdi-wsp-fab {{ right: 16px; bottom: 84px; }}
+            .bdi-wsp-fab:hover, .bdi-wsp-fab:focus {{ max-width: 56px; padding-right: 0; }}
+        }}
+        </style>
+
+        <a class="bdi-wsp-fab" href="{url}" target="_blank" rel="noopener noreferrer"
+           aria-label="Consultar por WhatsApp" title="Consultanos por WhatsApp">
+            <span class="bdi-wsp-icon">
+                <svg width="30" height="30" viewBox="0 0 32 32" fill="#ffffff"
+                     xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                    <path d="M16.04 3.2c-7.1 0-12.87 5.77-12.87 12.87 0 2.27.6 4.49 1.73 6.44L3.1 29.1l6.76-1.77a12.83 12.83 0 0 0 6.18 1.58h.01c7.1 0 12.87-5.77 12.87-12.87 0-3.44-1.34-6.67-3.77-9.1a12.78 12.78 0 0 0-9.1-3.74zm0 23.11h-.01a10.7 10.7 0 0 1-5.45-1.49l-.39-.23-4.01 1.05 1.07-3.91-.25-.4a10.65 10.65 0 0 1-1.63-5.69c0-5.9 4.8-10.7 10.7-10.7 2.86 0 5.54 1.11 7.56 3.14a10.62 10.62 0 0 1 3.13 7.57c0 5.9-4.8 10.66-10.72 10.66zm5.87-7.98c-.32-.16-1.9-.94-2.2-1.05-.29-.11-.5-.16-.72.16-.21.32-.82 1.05-1.01 1.27-.19.21-.37.24-.69.08-.32-.16-1.36-.5-2.59-1.6-.96-.85-1.6-1.91-1.79-2.23-.19-.32-.02-.5.14-.66.15-.14.32-.37.48-.56.16-.19.21-.32.32-.53.11-.21.05-.4-.03-.56-.08-.16-.72-1.74-.99-2.38-.26-.62-.52-.54-.72-.55l-.61-.01c-.21 0-.56.08-.85.4-.29.32-1.11 1.09-1.11 2.66s1.14 3.08 1.3 3.3c.16.21 2.24 3.42 5.43 4.8.76.33 1.35.52 1.81.67.76.24 1.45.21 2 .13.61-.09 1.9-.78 2.16-1.53.27-.75.27-1.4.19-1.53-.08-.13-.29-.21-.61-.37z"/>
+                </svg>
+            </span>
+            <span class="bdi-wsp-text">CONSULTAR POR WHATSAPP</span>
+        </a>
+        """,
+        unsafe_allow_html=True,
+    )
+
+
 def main() -> None:
     inject_css()
     render_header()
@@ -1873,6 +1947,8 @@ def main() -> None:
 
     with tab4:
         tab_aprende()
+
+    render_whatsapp_fab()
 
 
 if __name__ == "__main__":
